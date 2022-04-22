@@ -122,10 +122,16 @@ const getPageDataForHomePage = async(req, res) => {
             eventsPerPage.push({
                 name: pageData.pageName,
 
-                time: pageData.time,
+                time: new Date(parseInt(pageData.time) * 1000)
+                    .toISOString()
+                    .slice(11, 19),
                 sessionNb: pageData.Sessions.length + 1,
 
-                sessionAvg: pageData.time / (pageData.Sessions.length + 1),
+                sessionAvg: new Date(
+                        parseInt(pageData.time / (pageData.Sessions.length + 1)) * 1000
+                    )
+                    .toISOString()
+                    .slice(11, 19),
                 nbEvents: pageData.sortEvent.length +
                     pageData.selectEvent.length +
                     pageData.searchEvent.length +
@@ -153,6 +159,44 @@ const getPageDataForHomePage = async(req, res) => {
     });
 };
 
+const getPageDataForInfoPage = async(req, res) => {
+    const page = await PageSchema.findById(req.params.id);
+    let eventsPerPage = [];
+
+    const pageData = await getPopulatedPage(page._id);
+
+    eventsPerPage.push({
+        name: pageData.pageName,
+
+        time: pageData.time,
+        sessionNb: pageData.Sessions.length + 1,
+
+        sessionAvg: pageData.time / (pageData.Sessions.length + 1),
+        nbEvents: pageData.sortEvent.length +
+            pageData.selectEvent.length +
+            pageData.searchEvent.length +
+            pageData.groupEvent.length +
+            pageData.filterEvent.length +
+            pageData.aggEvent.length +
+            pageData.FilterSearchEvent.length +
+            pageData.checkfilterEvent.length +
+            pageData.PinnedEvent.length,
+    });
+
+    let totalEvents = 0;
+
+    eventsPerPage.map((el) => {
+        totalEvents += el.nbEvents;
+    });
+    const newArray = eventsPerPage.map((data) => {
+        return {
+            ...data,
+            nbEvents: data.nbEvents / totalEvents,
+        };
+    });
+    res.json({ newArray: newArray[0] });
+};
+
 module.exports = {
     AddPage,
     getPage,
@@ -162,4 +206,5 @@ module.exports = {
     getAllPages,
     getPageDataForHomePage,
     getPopulatedPageEvents,
+    getPageDataForInfoPage,
 };

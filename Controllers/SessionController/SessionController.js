@@ -1,5 +1,6 @@
 const SessionModel = require("../../models/SessionModel/SessionModel");
 const PageModel = require("../../models/PageModel/PageModel");
+const { default: mongoose } = require("mongoose");
 
 const createSession = async(page_id) => {
     const eventCreated = await SessionModel.create({
@@ -30,8 +31,26 @@ const getSessionsGroupedByDate = async(req, res) => {
     res.json({ res: groupedSessions });
 };
 
+const getSessionByPageIdGroupedByDate = async(req, res) => {
+    console.log(req.params);
+    const groupedSessions = await SessionModel.aggregate([{
+        $match: {
+            page: mongoose.Types.ObjectId(req.params.id),
+        },
+    }, ]).append([{
+        $group: {
+            _id: { $dateToString: { format: "%Y-%m-%d", date: "$startDate" } },
+            obj: {
+                $push: { page: "$page", startDate: "$startDate", endDate: "$endDate" },
+            },
+        },
+    }, ]);
+    res.json({ res: groupedSessions });
+};
+
 module.exports = {
     createSession,
     updateSession,
     getSessionsGroupedByDate,
+    getSessionByPageIdGroupedByDate,
 };

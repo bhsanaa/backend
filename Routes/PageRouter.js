@@ -3,6 +3,7 @@ const {
     getAllPages,
     getPageDataForHomePage,
     getPopulatedPageEvents,
+    getPageDataForInfoPage,
 } = require("../Controllers/PageController/PageController.js");
 const express = require("express");
 const {
@@ -34,10 +35,12 @@ const {
 } = require("../Controllers/EventController/CheckFilterEventController.js");
 const {
     getSessionsGroupedByDate,
+    getSessionByPageIdGroupedByDate,
 } = require("../Controllers/SessionController/SessionController.js");
+const { loginUser } = require("../Controllers/UserController.js");
 
 const router = express.Router();
-
+router.post("/signin", loginUser);
 router.get("/:pageId/sortEvents", getSortEventPerPage);
 router.get("/:pageId/aggEvents", getAggEventPerPage);
 router.get("/:pageId/pinEvents", getPinnedEventPerPage);
@@ -48,6 +51,8 @@ router.get("/:pageId/filterEvents", getFilterEventPerPage);
 router.get("/:pageId/searchFilterEvents", getSearchFilterEventPerPage);
 router.get("/:pageId/checkFilterEvents", getCheckFilterEventPerPage);
 router.get("/home", getPageDataForHomePage);
+router.get("/info/:id", getPageDataForInfoPage);
+router.get("/sessions/:id", getSessionByPageIdGroupedByDate);
 router.get("/sessions", getSessionsGroupedByDate);
 router.get("/:pageId", getPopulatedPageEvents);
 router.get("/", getAllPages);
