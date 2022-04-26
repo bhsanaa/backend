@@ -58,11 +58,6 @@ const getAllPages = async(req, res) => {
     res.json({ page });
 };
 
-const getPageIdFromName = async(req, res) => {
-    const result = await PageSchema.find({ name: req.params.name });
-    res.json({ result });
-};
-
 const getPopulatedPage = async(page_id) => {
     const page = await PageSchema.findById(page_id);
     const sortEvent = await PageSchema.findById(page_id).populate("sortEvent");
@@ -152,7 +147,7 @@ const getPageDataForHomePage = async(req, res) => {
         const newArray = eventsPerPage.map((data) => {
             return {
                 ...data,
-                nbEvents: data.nbEvents / totalEvents,
+                nbEvents: (data.nbEvents / totalEvents).toFixed(2) * 100 + "%",
             };
         });
         res.json({ newArray });
