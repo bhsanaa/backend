@@ -37,10 +37,22 @@ const {
     getSessionsGroupedByDate,
     getSessionByPageIdGroupedByDate,
 } = require("../Controllers/SessionController/SessionController.js");
-const { loginUser } = require("../Controllers/UserController.js");
+const {
+    loginUser,
+    updateUser,
+    requestPasswordReset,
+    passwordReset,
+    getUserById,
+    AddUser,
+    DeleteUser,
+    UpdateUser,
+    getAllUsers,
+} = require("../Controllers/UserController.js");
 
+const asynchHandler = require("express-async-handler");
 const router = express.Router();
 router.post("/signin", loginUser);
+router.put("/settings", updateUser);
 router.get("/:pageId/sortEvents", getSortEventPerPage);
 router.get("/:pageId/aggEvents", getAggEventPerPage);
 router.get("/:pageId/pinEvents", getPinnedEventPerPage);
@@ -54,6 +66,13 @@ router.get("/home", getPageDataForHomePage);
 router.get("/info/:id", getPageDataForInfoPage);
 router.get("/sessions/:id", getSessionByPageIdGroupedByDate);
 router.get("/sessions", getSessionsGroupedByDate);
+router.post("/resetPasswordRequest", requestPasswordReset);
+router.post("/passwordReset", passwordReset);
+router.post("/user/add", AddUser);
+router.put("/user/update/:id", UpdateUser);
+router.delete("/user/delete/:id", DeleteUser);
+router.get("/user/:id", getUserById);
+router.get("/user", getAllUsers);
 router.get("/:pageId", getPopulatedPageEvents);
 router.get("/", getAllPages);
 
