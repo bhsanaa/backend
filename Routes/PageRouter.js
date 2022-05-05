@@ -49,7 +49,8 @@ const {
     getAllUsers,
 } = require("../Controllers/UserController.js");
 
-const asynchHandler = require("express-async-handler");
+const { getAdmin } = require("../Controllers/AdminController.js");
+
 const router = express.Router();
 router.post("/signin", loginUser);
 router.put("/settings", updateUser);
@@ -73,7 +74,10 @@ router.put("/user/update/:id", UpdateUser);
 router.delete("/user/delete/:id", DeleteUser);
 router.get("/user/:id", getUserById);
 router.get("/user", getAllUsers);
+
 router.get("/:pageId", getPopulatedPageEvents);
 router.get("/", getAllPages);
+
+router.post("/admin", getAdmin);
 
 module.exports = router;

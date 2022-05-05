@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/UserModel");
+
 const Token = require("../models/TokenModel");
 const { sendEmail } = require("../helpers/sendEmail");
 const crypto = require("crypto");
@@ -112,14 +113,12 @@ const AddUser = async(req, res) => {
     console.log("lol ", req.body);
     const user = await User.findOne({ email: req.body.email });
     if (user) res.json({ err: "User Already Exists" });
-    const queryRes = await User.create(req.body);
+    const queryRes = await User.create({...req.body, role: "user" });
     res.json({ user: queryRes });
 };
 
 const UpdateUser = async(req, res) => {
-    const data = await User.findOneAndUpdate({ _id: req.params.id }, req.body, {
-        new: true,
-    });
+    const data = await User.findOneAndUpdate({ _id: req.params.id }, req.body);
     res.status(201).json(data);
 };
 
