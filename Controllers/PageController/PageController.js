@@ -159,7 +159,6 @@ const getPageDataForInfoPage = async(req, res) => {
     let eventsPerPage = [];
 
     const pageData = await getPopulatedPage(page._id);
-
     eventsPerPage.push({
         name: pageData.pageName,
 
@@ -186,7 +185,7 @@ const getPageDataForInfoPage = async(req, res) => {
     const newArray = eventsPerPage.map((data) => {
         return {
             ...data,
-            nbEvents: data.nbEvents / totalEvents,
+            nbEvents: totalEvents,
         };
     });
     res.json({ newArray: newArray[0] });

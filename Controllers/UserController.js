@@ -110,9 +110,11 @@ const getUserById = async(req, res) => {
 };
 
 const AddUser = async(req, res) => {
-    console.log("lol ", req.body);
     const user = await User.findOne({ email: req.body.email });
-    if (user) res.json({ err: "User Already Exists" });
+    if (user) {
+        res.json({ err: "User Already Exists" });
+        return;
+    }
     const queryRes = await User.create({...req.body, role: "user" });
     res.json({ user: queryRes });
 };
